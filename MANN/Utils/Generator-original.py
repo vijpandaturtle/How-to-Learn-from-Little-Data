@@ -1,13 +1,15 @@
 import tensorflow as tf
 import numpy as np
+import pytest
 
 import os
 import random
 from Images import get_shuffled_images, time_offset_label, load_transform
 
-class AnimalDataGenerator():
-    # This is a re-implementation of the omniglot generator for the animal pictures data.
-    def __init__(self, data_folder, batch_size=1, nb_samples=2, nb_samples_per_class=20, max_rotation=-np.pi/6, max_shift=10, img_size=(20,20), max_iter=None): )
+class OmniglotGenerator(object):
+    """Docstring for OmniglotGenerator"""
+    def __init__(self, data_folder, batch_size=1, nb_samples=5, nb_samples_per_class=10, max_rotation=-np.pi/6, max_shift=10, img_size=(20,20), max_iter=None):
+        super(OmniglotGenerator, self).__init__()
         self.data_folder = data_folder
         self.batch_size = batch_size
         self.nb_samples = nb_samples
@@ -51,7 +53,7 @@ class AnimalDataGenerator():
             shifts = np.random.uniform(-self.max_shift, self.max_shift, size=sequence_length)
 
             example_inputs[i] = np.asarray([load_transform(filename, angle=angle, s=shift, size=self.img_size).flatten() \
-                                        for (filename, angle, shift) in zip(image_files, angles, shifts)], dtype=np.float32)
+                                            for (filename, angle, shift) in zip(image_files, angles, shifts)], dtype=np.float32)
             example_outputs[i] = np.asarray(labels, dtype=np.int32)
 
         return example_inputs, example_outputs
