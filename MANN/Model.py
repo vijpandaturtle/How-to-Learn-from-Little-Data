@@ -19,18 +19,18 @@ def memory_augmented_neural_network(input_var, target_var, \
     r_0 = shared_float32(np.zeros((batch_size, nb_reads * memory_shape[1])), name='read_vector')
     wr_0 = shared_one_hot((batch_size, nb_reads, memory_shape[0]), name='wr')
     wu_0 = shared_one_hot((batch_size, memory_shape[0]), name='wu')
-    
+
     def shape_high(shape):
-    	shape = np.array(shape)
-    	if isinstance(shape, int):
+        shape = np.array(shape)
+        if isinstance(shape, int):
             high = np.sqrt(6. / shape)
-    	else:
+        else:
             high = np.sqrt(6. / (np.sum(shape[:2]) * np.prod(shape[2:])))
         return (shape,high)
 
     with tf.variable_scope("Weights"):
-    	shape, high = shape_high((nb_reads, controller_size, memory_shape[1]))
-        W_key = tf.get_variable('W_key', shape=shape,initializer=tf.random_uniform_initializer(-1*high, high))
+        shape, high = shape_high((nb_reads, controller_size, memory_shape[1]))
+        W_key = tf.get_variable('W_key', shape=shape, initializer=tf.random_uniform_initializer(-1*high, high))
         b_key = tf.get_variable('b_key', shape=(nb_reads, memory_shape[1]),initializer=tf.constant_initializer(0))
         shape, high = shape_high((nb_reads, controller_size, memory_shape[1]))
         W_add = tf.get_variable('W_add', shape=shape,initializer=tf.random_uniform_initializer(-1*high, high))
@@ -55,7 +55,7 @@ def memory_augmented_neural_network(input_var, target_var, \
         return [x[:,n*size:(n+1)*size] for n in range(nb_slice)]
 
 
-    def step((M_tm1, c_tm1, h_tm1, r_tm1, wr_tm1, wu_tm1),(x_t)):
+    def step((M_tm1, c_tm1, h_tm1, r_tm1, wr_tm1, wu_tm1), (x_t)):
 
         with tf.variable_scope("Weights", reuse=True):
             W_key = tf.get_variable('W_key', shape=(nb_reads, controller_size, memory_shape[1]))
